@@ -10,8 +10,41 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var myNameLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+     
+       self.myNameLabel.text = ""
+        
+        //instantiate a gray Activity Indicator View
+        var activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        //add the activity to the ViewController's view
+        view.addSubview(activityIndicatorView)
+        //position the Activity Indicator View in the center of the view
+        activityIndicatorView.center = view.center
+        //tell the Activity Indicator View to begin animating
+        activityIndicatorView.startAnimating()
+
+        
+        
+        let manager = AFHTTPRequestOperationManager()
+        
+        manager.GET( "http:/graph.facebook.com/stevejobs",
+            parameters: nil,
+            success: { (operation: AFHTTPRequestOperation!,responseObject: AnyObject!) in
+                println("Response: " + responseObject.description)
+                
+                if let myName = responseObject["name"] as? String {
+                    self.myNameLabel.text = myName
+                }
+            },
+            failure: { (operation: AFHTTPRequestOperation!,error: NSError!) in
+                println("Error: " + error.localizedDescription)
+        })
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 
